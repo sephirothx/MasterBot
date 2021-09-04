@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Discord.Commands;
 using Discord.WebSocket;
 using MasterBot.Service.Common;
 using MasterBot.Service.Jobs;
@@ -15,22 +14,16 @@ namespace MasterBot.Service.Services
     {
         
         private readonly DiscordSocketClient _discord;
-        private readonly CommandService      _commands;
         private readonly IConfiguration      _config;
-        private readonly IServiceProvider    _provider;
         private readonly ILogger<Worker>     _logger;
 
         public SchedulerService(DiscordSocketClient discord,
-                                CommandService commands,
                                 IConfiguration config,
-                                IServiceProvider provider,
                                 ILogger<Worker> logger)
         {
-            _discord  = discord;
-            _commands = commands;
-            _config   = config;
-            _provider = provider;
-            _logger   = logger;
+            _discord = discord;
+            _config  = config;
+            _logger  = logger;
         }
 
         public async Task ScheduleJobs()
@@ -53,7 +46,7 @@ namespace MasterBot.Service.Services
             var trigger = TriggerBuilder.Create()
                                         .WithIdentity("CW ping trigger")
                                         .WithSimpleSchedule(x => x.WithIntervalInHours(4).RepeatForever())
-                                        .StartAt(Utility.GetNextTimeslotTime())
+                                        .StartAt(Utility.GetNextTimeslotTime().AddMilliseconds(100))
                                         .Build();
 
             await scheduler.ScheduleJob(job, trigger);
@@ -68,7 +61,7 @@ namespace MasterBot.Service.Services
             var trigger = TriggerBuilder.Create()
                                         .WithIdentity("Games Starting trigger")
                                         .WithSimpleSchedule(x => x.WithIntervalInHours(4).RepeatForever())
-                                        .StartAt(Utility.GetNextTimeslotTime().AddMinutes(10))
+                                        .StartAt(Utility.GetNextTimeslotTime().AddMinutes(10).AddMilliseconds(100))
                                         .Build();
 
             await scheduler.ScheduleJob(job, trigger);
@@ -76,18 +69,36 @@ namespace MasterBot.Service.Services
 
         private void TimeslotPing()
         {
-            var chan = GetChannelFromConfig();
-            var role = GetRoleIdFromConfig();
+            try
+            {
+                _logger.LogInformation("Sending Timeslot ping");
 
-            chan.SendMessageAsync($"<@&{role}>").Wait();
+                var chan = GetChannelFromConfig();
+                var role = GetRoleIdFromConfig();
+
+                chan.SendMessageAsync($"<@&{role}>").Wait();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Sending Timeslot ping failed");
+            }
         }
 
         private void GamesStartingPing()
         {
-            var chan = GetChannelFromConfig();
-            var role = GetRoleIdFromConfig();
+            try
+            {
+                _logger.LogInformation("Sending Games Starting ping");
 
-            chan.SendMessageAsync($"<@&{role}> Games are up, don't get booted!").Wait();
+                var chan = GetChannelFromConfig();
+                var role = GetRoleIdFromConfig();
+
+                chan.SendMessageAsync($"<@&{role}> Games are up, don't get booted!").Wait();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError(e, "Sending Games Starting ping failed");
+            }
         }
 
         private SocketTextChannel GetChannelFromConfig()
