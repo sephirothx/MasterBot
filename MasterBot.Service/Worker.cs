@@ -61,7 +61,14 @@ namespace MasterBot.Service
             await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
             await _scheduler.ScheduleJobs();
 
-            await Task.Delay(-1, cancellationToken);
+            try
+            {
+                await Task.Delay(Timeout.Infinite, cancellationToken);
+            }
+            catch (TaskCanceledException)
+            {
+                _logger.LogInformation("Task canceled, closing the service.");
+            }
         }
 
         private async Task OnMessageReceivedAsync(SocketMessage s)
