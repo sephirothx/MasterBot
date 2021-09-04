@@ -17,7 +17,7 @@ namespace MasterBot.Service.Modules
         public GeneralModule(CommandService commands, IConfiguration config)
         {
             _commands = commands;
-            _config  = config;
+            _config   = config;
         }
 
         [Command("help"), Alias("h")]
@@ -30,7 +30,7 @@ namespace MasterBot.Service.Modules
             var builder = new EmbedBuilder
             {
                 Color = new Color(114, 137, 218),
-                Description = "These are the commands you can use"
+                Description = $"Type `{prefix}help command-name` to get the description of a specific command."
             };
             
             foreach (var module in _commands.Modules)
@@ -68,16 +68,16 @@ namespace MasterBot.Service.Modules
             var user   = Context.User;
             var result = _commands.Search(Context, command);
 
+            string prefix = _config["discord:prefix"];
             if (!result.IsSuccess)
             {
                 await ReplyAsync($"Sorry, I couldn't find a command like **{command}**.");
                 return;
             }
             
-            var builder = new EmbedBuilder()
+            var builder = new EmbedBuilder
             {
-                Color = new Color(114, 137, 218),
-                Description = $"Here are some commands like **{command}**"
+                Color = new Color(114, 137, 218)
             };
 
             foreach (var match in result.Commands)
@@ -86,8 +86,8 @@ namespace MasterBot.Service.Modules
 
                 builder.AddField(x =>
                 {
-                    x.Name = string.Join(", ", cmd.Aliases);
-                    x.Value = $"Parameters: {string.Join(", ", cmd.Parameters.Select(p => p.Name))}\n" + 
+                    x.Name = string.Join(", ", cmd.Aliases.Select(c => $"`{prefix}{c}`"));
+                    x.Value = $"Parameters: {string.Join(", ", cmd.Parameters.Select(p => $"`{p.Name}`"))}\n" + 
                               $"Summary: {cmd.Summary}";
                     x.IsInline = false;
                 });
