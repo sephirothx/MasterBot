@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace MasterBot.Service.Services
 {
-    public class CommandHandler
+    public class StartupService
     {
         private readonly DiscordSocketClient _discord;
         private readonly CommandService      _commands;
@@ -16,7 +16,7 @@ namespace MasterBot.Service.Services
         private readonly IServiceProvider    _provider;
         private readonly ILogger             _logger;
 
-        public CommandHandler(DiscordSocketClient discord,
+        public StartupService(DiscordSocketClient discord,
                               CommandService commands,
                               IConfigurationRoot config,
                               IServiceProvider provider,
@@ -27,10 +27,25 @@ namespace MasterBot.Service.Services
             _config   = config;
             _provider = provider;
             _logger   = logger;
-
-            _discord.MessageReceived += OnMessageReceivedAsync;
         }
-        
+
+        public void Run()
+        {
+            _discord.MessageReceived += OnMessageReceivedAsync;
+
+            _discord.Log  += LogAsync;
+            _commands.Log += LogAsync;
+        }
+
+        private Task LogAsync(LogMessage msg)
+        {
+            _logger.Log((LogLevel)msg.Severity,
+                        msg.Exception,
+                        "{source}: {message}", msg.Source, msg.Message);
+
+            return Task.CompletedTask;
+        }
+
         private async Task OnMessageReceivedAsync(SocketMessage s)
         {
             if (s is not SocketUserMessage msg || msg.Author.Id == _discord.CurrentUser.Id)

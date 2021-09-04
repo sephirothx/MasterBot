@@ -1,41 +1,84 @@
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using System;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Discord;
+using Discord.Commands;
+using Discord.WebSocket;
+using MasterBot.Service.Services;
 using Microsoft.Extensions.Configuration;
 
 namespace MasterBot.Service
 {
     public class Worker : BackgroundService
     {
-        private readonly ILogger<Worker>  _logger;
-        private readonly IConfiguration   _config;
-        private readonly IServiceProvider _services;
+        private readonly ILogger<Worker>     _logger;
+        private readonly IConfiguration      _config;
+        private readonly IServiceProvider    _services;
+        private readonly DiscordSocketClient _discord;
+        private readonly CommandService      _commands;
+        private readonly StartupService      _startup;
 
-        public Worker(ILogger<Worker> logger, IConfiguration config, IServiceProvider services)
+        public Worker(ILogger<Worker> logger,
+                      IConfiguration config,
+                      IServiceProvider services,
+                      DiscordSocketClient discord,
+                      CommandService commands,
+                      StartupService startup)
         {
             _logger   = logger;
             _config   = config;
             _services = services;
+            _discord  = discord;
+            _commands = commands;
+            _startup  = startup;
         }
 
-        public override Task StartAsync(CancellationToken cancellationToken)
+        public override async Task StartAsync(CancellationToken cancellationToken)
         {
-            return base.StartAsync(cancellationToken);
+            _startup.Run();
+
+            await _discord.LoginAsync(TokenType.Bot, _config["discord:token"]);
+            await _discord.StartAsync();
+
+            await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
+
+            await base.StartAsync(cancellationToken);
         }
 
-        public override Task StopAsync(CancellationToken cancellationToken)
+        public override async Task StopAsync(CancellationToken cancellationToken)
         {
-            return base.StopAsync(cancellationToken);
+            _logger.LogInformation("Service stopped at {time}", DateTime.UtcNow);
+
+            await base.StopAsync(cancellationToken);
         }
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        protected override async Task ExecuteAsync(CancellationToken cancellationToken)
         {
-            while (!stoppingToken.IsCancellationRequested)
+            await Task.Delay(-1, cancellationToken);
+        }
+
+        private async Task OnMessageReceivedAsync(SocketMessage s)
+        {
+            if (s is not SocketUserMessage msg || msg.Author.Id == _discord.CurrentUser.Id)
             {
-                _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-                await Task.Delay(1000, stoppingToken);
+                return;
+            }
+            
+            var context = new SocketCommandContext(_discord, msg);
+
+            int argPos = 0;
+            if (msg.HasStringPrefix(_config["discord:prefix"], ref argPos) ||
+                msg.HasMentionPrefix(_discord.CurrentUser, ref argPos))
+            {
+                var result = await _commands.ExecuteAsync(context, argPos, _services);
+
+                if (!result.IsSuccess)
+                {
+                    _logger.LogError("msg: {msg}, result: {result}", msg.ToString(), result.ToString());
+                }
             }
         }
     }
