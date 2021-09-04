@@ -1,4 +1,5 @@
-﻿using Discord;
+﻿using System;
+using Discord;
 using Microsoft.Extensions.Logging;
 
 namespace MasterBot.Service.Common
@@ -17,6 +18,14 @@ namespace MasterBot.Service.Common
                 LogSeverity.Critical => LogLevel.Critical,
                 _                    => LogLevel.None
             };
+        }
+
+        public static DateTimeOffset GetNextTimeslotTime()
+        {
+            var time = DateTimeOffset.Now.ToUniversalTime();
+
+            var start = new DateTimeOffset(time.Year, time.Month, time.Day, time.Hour, 0, 0, TimeSpan.Zero);
+            return start.AddHours(4 - time.Hour % 4);
         }
     }
 }
