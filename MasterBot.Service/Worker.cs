@@ -41,6 +41,18 @@ namespace MasterBot.Service
 
         public override async Task StartAsync(CancellationToken cancellationToken)
         {
+            _logger.LogInformation("Service started at {time}", DateTime.UtcNow);
+            await base.StartAsync(cancellationToken);
+        }
+
+        public override async Task StopAsync(CancellationToken cancellationToken)
+        {
+            _logger.LogInformation("Service stopped at {time}", DateTime.UtcNow);
+            await base.StopAsync(cancellationToken);
+        }
+
+        protected override async Task ExecuteAsync(CancellationToken cancellationToken)
+        {
             _startup.Run();
 
             await _discord.LoginAsync(TokenType.Bot, _config["discord:token"]);
@@ -49,18 +61,6 @@ namespace MasterBot.Service
             await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
             await _scheduler.ScheduleJobs();
 
-            await base.StartAsync(cancellationToken);
-        }
-
-        public override async Task StopAsync(CancellationToken cancellationToken)
-        {
-            _logger.LogInformation("Service stopped at {time}", DateTime.UtcNow);
-
-            await base.StopAsync(cancellationToken);
-        }
-
-        protected override async Task ExecuteAsync(CancellationToken cancellationToken)
-        {
             await Task.Delay(-1, cancellationToken);
         }
 
