@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using MasterBot.Service.Common;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
@@ -39,7 +40,7 @@ namespace MasterBot.Service.Services
 
         private Task LogAsync(LogMessage msg)
         {
-            _logger.Log((LogLevel)msg.Severity,
+            _logger.Log(Utility.GetLogLevel(msg.Severity),
                         msg.Exception,
                         "{source}: {message}", msg.Source, msg.Message);
 
