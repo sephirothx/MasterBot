@@ -4,6 +4,8 @@ using Discord.Commands;
 
 namespace MasterBot.Service.Modules
 {
+    [Name("Admin")]
+    [Summary("Admin specific commands")]
     [RequireUserPermission(GuildPermission.Administrator)]
     public class AdminModule : ModuleBase<SocketCommandContext>
     {
