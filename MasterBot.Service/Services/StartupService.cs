@@ -12,15 +12,15 @@ namespace MasterBot.Service.Services
     {
         private readonly DiscordSocketClient _discord;
         private readonly CommandService      _commands;
-        private readonly IConfigurationRoot  _config;
+        private readonly IConfiguration      _config;
         private readonly IServiceProvider    _provider;
-        private readonly ILogger             _logger;
+        private readonly ILogger<Worker>     _logger;
 
         public StartupService(DiscordSocketClient discord,
                               CommandService commands,
-                              IConfigurationRoot config,
+                              IConfiguration config,
                               IServiceProvider provider,
-                              ILogger logger)
+                              ILogger<Worker> logger)
         {
             _discord  = discord;
             _commands = commands;
