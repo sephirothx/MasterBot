@@ -10,12 +10,12 @@ namespace MasterBot.Service.Common
         {
             return severity switch
             {
-                LogSeverity.Verbose  => LogLevel.Trace,
-                LogSeverity.Debug    => LogLevel.Debug,
-                LogSeverity.Info     => LogLevel.Information,
-                LogSeverity.Warning  => LogLevel.Warning,
-                LogSeverity.Error    => LogLevel.Error,
                 LogSeverity.Critical => LogLevel.Critical,
+                LogSeverity.Error    => LogLevel.Error,
+                LogSeverity.Warning  => LogLevel.Warning,
+                LogSeverity.Info     => LogLevel.Information,
+                LogSeverity.Debug    => LogLevel.Information,
+                LogSeverity.Verbose  => LogLevel.Information,
                 _                    => LogLevel.None
             };
         }
