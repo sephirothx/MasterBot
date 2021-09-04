@@ -51,7 +51,8 @@ namespace MasterBot.Service
 
             services.AddSingleton(client)
                     .AddSingleton(commands)
-                    .AddSingleton<StartupService>();
+                    .AddSingleton<StartupService>()
+                    .AddSingleton<SchedulerService>();
         }
     }
 }

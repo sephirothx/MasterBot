@@ -20,20 +20,23 @@ namespace MasterBot.Service
         private readonly DiscordSocketClient _discord;
         private readonly CommandService      _commands;
         private readonly StartupService      _startup;
+        private readonly SchedulerService    _scheduler;
 
         public Worker(ILogger<Worker> logger,
                       IConfiguration config,
                       IServiceProvider services,
                       DiscordSocketClient discord,
                       CommandService commands,
-                      StartupService startup)
+                      StartupService startup,
+                      SchedulerService scheduler)
         {
-            _logger   = logger;
-            _config   = config;
-            _services = services;
-            _discord  = discord;
-            _commands = commands;
-            _startup  = startup;
+            _logger    = logger;
+            _config    = config;
+            _services  = services;
+            _discord   = discord;
+            _commands  = commands;
+            _startup   = startup;
+            _scheduler = scheduler;
         }
 
         public override async Task StartAsync(CancellationToken cancellationToken)
@@ -44,6 +47,7 @@ namespace MasterBot.Service
             await _discord.StartAsync();
 
             await _commands.AddModulesAsync(Assembly.GetEntryAssembly(), _services);
+            await _scheduler.ScheduleJobs();
 
             await base.StartAsync(cancellationToken);
         }
