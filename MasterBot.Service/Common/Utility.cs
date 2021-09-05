@@ -34,7 +34,7 @@ namespace MasterBot.Service.Common
 
         public DateTimeOffset GetLastTimeslotTime()
         {
-            int timeslot_interval_h = int.Parse(_config["warlight:timeslot:interval_h"]);
+            int timeslot_interval_h = int.Parse(_config["warzone:timeslot:interval-h"]);
 
             var time  = DateTimeOffset.Now.ToUniversalTime();
             var start = new DateTimeOffset(time.Year, time.Month, time.Day, time.Hour, 0, 0, TimeSpan.Zero);
@@ -44,7 +44,7 @@ namespace MasterBot.Service.Common
 
         public DateTimeOffset GetNextTimeslotTime()
         {
-            int timeslot_interval_h = int.Parse(_config["warlight:timeslot:interval_h"]);
+            int timeslot_interval_h = int.Parse(_config["warzone:timeslot:interval_h"]);
 
             return GetLastTimeslotTime().AddHours(timeslot_interval_h);
         }
@@ -54,8 +54,7 @@ namespace MasterBot.Service.Common
             int key_number = int.Parse(_config["warzone:timeslot:key-number"]);
 
             var last_time = GetLastTimeslotTime();
-            var key_time = new DateTimeOffset(Convert.ToDateTime(_config["warzone:timeslot:key-datetime"]),
-                                         TimeSpan.Zero);
+            var key_time  = DateTimeOffset.Parse(_config["warzone:timeslot:key-datetime"]).UtcDateTime;
 
             var diff = (int)(last_time - key_time).TotalHours / 4;
 
