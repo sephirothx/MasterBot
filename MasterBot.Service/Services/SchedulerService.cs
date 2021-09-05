@@ -11,15 +11,12 @@ namespace MasterBot.Service.Services
 {
     public class SchedulerService
     {
-        private readonly IConfiguration      _config;
         private readonly ILogger<Worker>     _logger;
         private readonly Utility             _utility;
 
-        public SchedulerService(IConfiguration config,
-                                ILogger<Worker> logger,
+        public SchedulerService(ILogger<Worker> logger,
                                 Utility utility)
         {
-            _config  = config;
             _logger  = logger;
             _utility = utility;
         }
@@ -43,7 +40,7 @@ namespace MasterBot.Service.Services
 
             var trigger = TriggerBuilder.Create()
                                         .WithIdentity("CW ping trigger")
-                                        .WithSimpleSchedule(x => x.WithIntervalInHours(int.Parse(_config["warzone:timeslot:interval_h"]))
+                                        .WithSimpleSchedule(x => x.WithIntervalInHours(_utility.GetTimeslotIntervalH())
                                                                   .RepeatForever())
                                         .StartAt(_utility.GetNextTimeslotTime().AddMilliseconds(200))
                                         .Build();
@@ -59,7 +56,7 @@ namespace MasterBot.Service.Services
 
             var trigger = TriggerBuilder.Create()
                                         .WithIdentity("Games Starting trigger")
-                                        .WithSimpleSchedule(x => x.WithIntervalInHours(int.Parse(_config["warzone:timeslot:interval_h"]))
+                                        .WithSimpleSchedule(x => x.WithIntervalInHours(_utility.GetTimeslotIntervalH())
                                                                   .RepeatForever())
                                         .StartAt(_utility.GetNextTimeslotTime().AddMinutes(10).AddMilliseconds(200))
                                         .Build();
