@@ -1,11 +1,19 @@
 ﻿using System;
 using Discord;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace MasterBot.Service.Common
 {
-    public static class Utility
+    public class Utility
     {
+        private readonly IConfiguration _config;
+
+        public Utility(IConfiguration config)
+        {
+            _config = config;
+        }
+
         public static LogLevel GetLogLevel(LogSeverity severity)
         {
             return severity switch
@@ -20,12 +28,14 @@ namespace MasterBot.Service.Common
             };
         }
 
-        public static DateTimeOffset GetNextTimeslotTime()
+        public DateTimeOffset GetNextTimeslotTime()
         {
-            var time = DateTimeOffset.Now.ToUniversalTime();
+            int timeslot_interval_h = int.Parse(_config["warlight:timeslot:interval_h"]);
 
+            var time  = DateTimeOffset.Now.ToUniversalTime();
             var start = new DateTimeOffset(time.Year, time.Month, time.Day, time.Hour, 0, 0, TimeSpan.Zero);
-            return start.AddHours(4 - time.Hour % 4);
+
+            return start.AddHours(timeslot_interval_h - time.Hour % timeslot_interval_h);
         }
     }
 }
