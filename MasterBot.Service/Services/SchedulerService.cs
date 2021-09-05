@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Discord.WebSocket;
 using MasterBot.Service.Common;
 using MasterBot.Service.Jobs;
 using Microsoft.Extensions.Configuration;
@@ -12,18 +11,17 @@ namespace MasterBot.Service.Services
 {
     public class SchedulerService
     {
-        
-        private readonly DiscordSocketClient _discord;
         private readonly IConfiguration      _config;
         private readonly ILogger<Worker>     _logger;
+        private readonly Utility             _utility;
 
-        public SchedulerService(DiscordSocketClient discord,
-                                IConfiguration config,
-                                ILogger<Worker> logger)
+        public SchedulerService(IConfiguration config,
+                                ILogger<Worker> logger,
+                                Utility utility)
         {
-            _discord = discord;
             _config  = config;
             _logger  = logger;
+            _utility = utility;
         }
 
         public async Task ScheduleJobs()
@@ -45,8 +43,9 @@ namespace MasterBot.Service.Services
 
             var trigger = TriggerBuilder.Create()
                                         .WithIdentity("CW ping trigger")
-                                        .WithSimpleSchedule(x => x.WithIntervalInHours(4).RepeatForever())
-                                        .StartAt(Utility.GetNextTimeslotTime().AddMilliseconds(100))
+                                        .WithSimpleSchedule(x => x.WithIntervalInHours(int.Parse(_config["warzone:timeslot:interval_h"]))
+                                                                  .RepeatForever())
+                                        .StartAt(_utility.GetNextTimeslotTime().AddMilliseconds(200))
                                         .Build();
 
             await scheduler.ScheduleJob(job, trigger);
@@ -60,8 +59,9 @@ namespace MasterBot.Service.Services
 
             var trigger = TriggerBuilder.Create()
                                         .WithIdentity("Games Starting trigger")
-                                        .WithSimpleSchedule(x => x.WithIntervalInHours(4).RepeatForever())
-                                        .StartAt(Utility.GetNextTimeslotTime().AddMinutes(10).AddMilliseconds(100))
+                                        .WithSimpleSchedule(x => x.WithIntervalInHours(int.Parse(_config["warzone:timeslot:interval_h"]))
+                                                                  .RepeatForever())
+                                        .StartAt(_utility.GetNextTimeslotTime().AddMinutes(10).AddMilliseconds(200))
                                         .Build();
 
             await scheduler.ScheduleJob(job, trigger);
@@ -73,8 +73,8 @@ namespace MasterBot.Service.Services
             {
                 _logger.LogInformation("Sending Timeslot ping");
 
-                var chan = GetChannelFromConfig();
-                var role = GetRoleIdFromConfig();
+                var chan = _utility.GetChannelFromConfig();
+                var role = _utility.GetRoleIdFromConfig();
 
                 chan.SendMessageAsync($"<@&{role}>").Wait();
             }
@@ -90,8 +90,8 @@ namespace MasterBot.Service.Services
             {
                 _logger.LogInformation("Sending Games Starting ping");
 
-                var chan = GetChannelFromConfig();
-                var role = GetRoleIdFromConfig();
+                var chan = _utility.GetChannelFromConfig();
+                var role = _utility.GetRoleIdFromConfig();
 
                 chan.SendMessageAsync($"<@&{role}> Games are up, don't get booted!").Wait();
             }
@@ -99,21 +99,6 @@ namespace MasterBot.Service.Services
             {
                 _logger.LogError(e, "Sending Games Starting ping failed");
             }
-        }
-
-        private SocketTextChannel GetChannelFromConfig()
-        {
-            var id = ulong.Parse(_config["discord:ping-channel"]);
-            var ch = _discord.GetChannel(id) as SocketTextChannel ?? throw new Exception($"Channel {id} is not valid.");
-
-            return ch;
-        }
-
-        private ulong GetRoleIdFromConfig()
-        {
-            var id = ulong.Parse(_config["discord:ping-role"]);
-
-            return id;
         }
     }
 }
