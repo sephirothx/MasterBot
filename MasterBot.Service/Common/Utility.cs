@@ -32,14 +32,21 @@ namespace MasterBot.Service.Common
             };
         }
 
-        public DateTimeOffset GetNextTimeslotTime()
+        public DateTimeOffset GetLastTimeslotTime()
         {
             int timeslot_interval_h = int.Parse(_config["warlight:timeslot:interval_h"]);
 
             var time  = DateTimeOffset.Now.ToUniversalTime();
             var start = new DateTimeOffset(time.Year, time.Month, time.Day, time.Hour, 0, 0, TimeSpan.Zero);
 
-            return start.AddHours(timeslot_interval_h - time.Hour % timeslot_interval_h);
+            return start.AddHours(-(time.Hour % timeslot_interval_h));
+        }
+
+        public DateTimeOffset GetNextTimeslotTime()
+        {
+            int timeslot_interval_h = int.Parse(_config["warlight:timeslot:interval_h"]);
+
+            return GetLastTimeslotTime().AddHours(timeslot_interval_h);
         }
 
         public SocketTextChannel GetChannelFromConfig()
