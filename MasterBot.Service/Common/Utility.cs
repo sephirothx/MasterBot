@@ -49,6 +49,19 @@ namespace MasterBot.Service.Common
             return GetLastTimeslotTime().AddHours(timeslot_interval_h);
         }
 
+        public int GetLastTimeslotNumber()
+        {
+            int key_number = int.Parse(_config["warzone:timeslot:key-number"]);
+
+            var last_time = GetLastTimeslotTime();
+            var key_time = new DateTimeOffset(Convert.ToDateTime(_config["warzone:timeslot:key-datetime"]),
+                                         TimeSpan.Zero);
+
+            var diff = (int)(last_time - key_time).TotalHours / 4;
+
+            return key_number + diff;
+        }
+
         public SocketTextChannel GetChannelFromConfig()
         {
             var id = ulong.Parse(_config["discord:ping-channel"]);
