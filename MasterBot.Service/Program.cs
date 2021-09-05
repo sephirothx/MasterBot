@@ -2,6 +2,7 @@ using System;
 using Discord;
 using Discord.Commands;
 using Discord.WebSocket;
+using MasterBot.Service.Common;
 using MasterBot.Service.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -52,6 +53,7 @@ namespace MasterBot.Service
 
             services.AddSingleton(client)
                     .AddSingleton(commands)
+                    .AddSingleton<Utility>()
                     .AddSingleton<StartupService>()
                     .AddSingleton<SchedulerService>();
         }
