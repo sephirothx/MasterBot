@@ -76,5 +76,12 @@ namespace MasterBot.Service.Common
 
             return id;
         }
+
+        public int GetCurrentSeason()
+        {
+            int id = int.Parse(_config["warzone:current-season"]);
+
+            return id;
+        }
     }
 }
