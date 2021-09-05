@@ -45,7 +45,8 @@ namespace MasterBot.Service.Services
                                         .StartAt(_utility.GetNextTimeslotTime().AddMilliseconds(200))
                                         .Build();
 
-            await scheduler.ScheduleJob(job, trigger);
+            var next = await scheduler.ScheduleJob(job, trigger);
+            _logger.LogInformation("CW ping scheduled for {datetime}", next);
         }
 
         private async Task ScheduleGamesStartingPing(IScheduler scheduler)
@@ -61,7 +62,8 @@ namespace MasterBot.Service.Services
                                         .StartAt(_utility.GetNextTimeslotTime().AddMinutes(10).AddMilliseconds(200))
                                         .Build();
 
-            await scheduler.ScheduleJob(job, trigger);
+            var next = await scheduler.ScheduleJob(job, trigger);
+            _logger.LogInformation("Games Starting ping scheduled for {datetime}", next);
         }
 
         private void TimeslotPing()
