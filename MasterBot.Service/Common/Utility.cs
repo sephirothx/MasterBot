@@ -34,19 +34,15 @@ namespace MasterBot.Service.Common
 
         public DateTimeOffset GetLastTimeslotTime()
         {
-            int timeslot_interval_h = int.Parse(_config["warzone:timeslot:interval-h"]);
-
             var time  = DateTimeOffset.Now.ToUniversalTime();
             var start = new DateTimeOffset(time.Year, time.Month, time.Day, time.Hour, 0, 0, TimeSpan.Zero);
 
-            return start.AddHours(-(time.Hour % timeslot_interval_h));
+            return start.AddHours(-(time.Hour % GetTimeslotIntervalH()));
         }
 
         public DateTimeOffset GetNextTimeslotTime()
         {
-            int timeslot_interval_h = int.Parse(_config["warzone:timeslot:interval_h"]);
-
-            return GetLastTimeslotTime().AddHours(timeslot_interval_h);
+            return GetLastTimeslotTime().AddHours(GetTimeslotIntervalH());
         }
 
         public int GetLastTimeslotNumber()
@@ -81,6 +77,13 @@ namespace MasterBot.Service.Common
             int id = int.Parse(_config["warzone:current-season"]);
 
             return id;
+        }
+
+        public int GetTimeslotIntervalH()
+        {
+            int h = int.Parse(_config["warzone:timeslot:interval-h"]);
+
+            return h;
         }
     }
 }
