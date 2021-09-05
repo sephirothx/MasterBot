@@ -52,9 +52,14 @@ It has several benefits:
         [Summary("Posts a link to a previous timeslot.")]
         public async Task Timeslot(int diff)
         {
-            await ReplyAsync("https://www.warzone.com/Clans/War"  +
-                             $"?ID={_utility.GetCurrentSeason()}" +
-                             $"&Timeslot={_utility.GetLastTimeslotNumber() - Math.Abs(diff)}");
+            int timeslot = _utility.GetLastTimeslotNumber() - Math.Abs(diff);
+
+            string msg = timeslot > 0
+                             ? "https://www.warzone.com/Clans/War"  +
+                               $"?ID={_utility.GetCurrentSeason()}" +
+                               $"&Timeslot={timeslot}"
+                             : $"Were you even born back then {Context.User.Mention}?";
+            await ReplyAsync(msg);
         }
     }
 }
