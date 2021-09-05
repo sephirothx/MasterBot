@@ -50,9 +50,9 @@ It has several benefits:
 
         [Command("timeslot"), Alias("ts")]
         [Summary("Posts a link to a previous timeslot.")]
-        public async Task Timeslot(int diff)
+        public async Task Timeslot(int n)
         {
-            int timeslot = _utility.GetLastTimeslotNumber() - Math.Abs(diff);
+            int timeslot = _utility.GetLastTimeslotNumber() - Math.Abs(n);
 
             string msg = timeslot > 0
                              ? "https://www.warzone.com/Clans/War"  +
