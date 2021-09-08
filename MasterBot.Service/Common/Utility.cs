@@ -57,6 +57,16 @@ namespace MasterBot.Service.Common
             return key_number + diff;
         }
 
+        public string GetTimeslotLink(int n = 0)
+        {
+            int timeslot = GetLastTimeslotNumber() - Math.Abs(n);
+            if (timeslot < 0) throw new ArgumentException("Timeslot not found");
+
+            return "https://www.warzone.com/Clans/War"  +
+                   $"?ID={GetCurrentSeason()}" +
+                   $"&Timeslot={timeslot}";
+        }
+
         public SocketTextChannel GetChannelFromConfig()
         {
             var id = ulong.Parse(_config["discord:ping-channel"]);
