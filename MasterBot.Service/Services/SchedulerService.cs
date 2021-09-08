@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using MasterBot.Service.Common;
 using MasterBot.Service.Jobs;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using Quartz;
 using Quartz.Impl;
@@ -11,8 +10,8 @@ namespace MasterBot.Service.Services
 {
     public class SchedulerService
     {
-        private readonly ILogger<Worker>     _logger;
-        private readonly Utility             _utility;
+        private readonly ILogger<Worker> _logger;
+        private readonly Utility         _utility;
 
         public SchedulerService(ILogger<Worker> logger,
                                 Utility utility)
@@ -76,6 +75,7 @@ namespace MasterBot.Service.Services
                 var role = _utility.GetRoleIdFromConfig();
 
                 chan.SendMessageAsync($"<@&{role}>").Wait();
+                chan.SendMessageAsync(_utility.GetTimeslotLink()).Wait();
             }
             catch (Exception e)
             {
