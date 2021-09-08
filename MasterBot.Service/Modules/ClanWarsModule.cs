@@ -43,23 +43,21 @@ It has several benefits:
         [Summary("Posts a link to the latest timeslot.")]
         public async Task Timeslot()
         {
-            await ReplyAsync("https://www.warzone.com/Clans/War"  +
-                             $"?ID={_utility.GetCurrentSeason()}" +
-                             $"&Timeslot={_utility.GetLastTimeslotNumber()}");
+            await ReplyAsync(_utility.GetTimeslotLink());
         }
 
         [Command("timeslot"), Alias("ts")]
         [Summary("Posts a link to a previous timeslot.")]
         public async Task Timeslot(int n)
         {
-            int timeslot = _utility.GetLastTimeslotNumber() - Math.Abs(n);
-
-            string msg = timeslot > 0
-                             ? "https://www.warzone.com/Clans/War"  +
-                               $"?ID={_utility.GetCurrentSeason()}" +
-                               $"&Timeslot={timeslot}"
-                             : $"Were you even born back then {Context.User.Mention}?";
-            await ReplyAsync(msg);
+            try
+            {
+                await ReplyAsync(_utility.GetTimeslotLink(n));
+            }
+            catch (ArgumentException)
+            {
+                await ReplyAsync($"Were you even born back then {Context.User.Mention}?");
+            }
         }
     }
 }
