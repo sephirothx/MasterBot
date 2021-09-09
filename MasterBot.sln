@@ -7,6 +7,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MasterBot.Service", "Master
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "WarZone.Api", "WarZone.Api\WarZone.Api.csproj", "{A0A61F3E-36C7-4D8F-B925-EE72BB97D1EF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RefitTest", "RefitTest\RefitTest.csproj", "{167F56AB-BAE4-4FB2-B5B7-776488F7C51B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{A0A61F3E-36C7-4D8F-B925-EE72BB97D1EF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A0A61F3E-36C7-4D8F-B925-EE72BB97D1EF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A0A61F3E-36C7-4D8F-B925-EE72BB97D1EF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{167F56AB-BAE4-4FB2-B5B7-776488F7C51B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{167F56AB-BAE4-4FB2-B5B7-776488F7C51B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{167F56AB-BAE4-4FB2-B5B7-776488F7C51B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{167F56AB-BAE4-4FB2-B5B7-776488F7C51B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
