@@ -58,7 +58,7 @@ namespace MasterBot.Service.Services
                                         .WithIdentity("Games Starting trigger")
                                         .WithSimpleSchedule(x => x.WithIntervalInHours(_utility.GetTimeslotIntervalH())
                                                                   .RepeatForever())
-                                        .StartAt(_utility.GetNextTimeslotTime().AddMinutes(10).AddMilliseconds(200))
+                                        .StartAt(_utility.GetNextTimeslotTime().AddMinutes(9).AddMilliseconds(200))
                                         .Build();
 
             var next = await scheduler.ScheduleJob(job, trigger);
@@ -92,7 +92,7 @@ namespace MasterBot.Service.Services
                 var chan = _utility.GetChannelFromConfig();
                 var role = _utility.GetRoleIdFromConfig();
 
-                chan.SendMessageAsync($"<@&{role}> Games are up, don't get booted!").Wait();
+                chan.SendMessageAsync($"<@&{role}> One minute left before games start").Wait();
             }
             catch (Exception e)
             {
