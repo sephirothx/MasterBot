@@ -75,9 +75,9 @@ It has several benefits:
 
         [Command("templates")]
         [Summary("Posts the list of templates of a previous timeslot.")]
-        public async Task Templates(int i)
+        public async Task Templates(int n)
         {
-            int timeslot  = _utility.GetLastTimeslotNumber() - Math.Abs(i);
+            int timeslot  = _utility.GetLastTimeslotNumber() - Math.Abs(n);
             var templates = await _timeslots.GetTimeslotTemplates(timeslot);
 
             await ReplyAsync(string.Join($"{Environment.NewLine}", templates));
