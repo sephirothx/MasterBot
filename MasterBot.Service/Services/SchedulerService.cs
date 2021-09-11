@@ -5,19 +5,23 @@ using MasterBot.Service.Jobs;
 using Microsoft.Extensions.Logging;
 using Quartz;
 using Quartz.Impl;
+using WarZone.Web;
 
 namespace MasterBot.Service.Services
 {
     public class SchedulerService
     {
         private readonly ILogger<Worker> _logger;
+        private readonly ITimeslotsData  _timeslots;
         private readonly Utility         _utility;
 
         public SchedulerService(ILogger<Worker> logger,
+                                ITimeslotsData timeslots,
                                 Utility utility)
         {
-            _logger  = logger;
-            _utility = utility;
+            _logger    = logger;
+            _timeslots = timeslots;
+            _utility   = utility;
         }
 
         public async Task ScheduleJobs()
@@ -76,6 +80,8 @@ namespace MasterBot.Service.Services
 
                 chan.SendMessageAsync($"<@&{role}>").Wait();
                 chan.SendMessageAsync(_utility.GetTimeslotLink()).Wait();
+                chan.SendMessageAsync(string.Join($"{Environment.NewLine}",
+                                                  _timeslots.GetTimeslotTemplates(_utility.GetLastTimeslotNumber()).Result));
             }
             catch (Exception e)
             {
