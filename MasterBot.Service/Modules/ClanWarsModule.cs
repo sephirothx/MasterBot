@@ -2,6 +2,7 @@
 using System.Threading.Tasks;
 using Discord.Commands;
 using MasterBot.Service.Common;
+using WarZone.Web;
 
 namespace MasterBot.Service.Modules
 {
@@ -9,11 +10,13 @@ namespace MasterBot.Service.Modules
     [Summary("Clan Wars specific commands")]
     public class ClanWarsModule : ModuleBase<SocketCommandContext>
     {
-        private readonly Utility _utility;
+        private readonly ITimeslotsData _timeslots;
+        private readonly Utility        _utility;
 
-        public ClanWarsModule(Utility utility)
+        public ClanWarsModule(ITimeslotsData timeslots, Utility utility)
         {
-            _utility = utility;
+            _timeslots = timeslots;
+            _utility   = utility;
         }
 
         [Command("freewin"), Alias("fw")]
@@ -58,6 +61,26 @@ It has several benefits:
             {
                 await ReplyAsync($"Were you even born back then {Context.User.Mention}?");
             }
+        }
+
+        [Command("templates")]
+        [Summary("Posts the list of templates of the latest timeslot.")]
+        public async Task Templates()
+        {
+            int timeslot  = _utility.GetLastTimeslotNumber();
+            var templates = await _timeslots.GetTimeslotTemplates(timeslot);
+
+            await ReplyAsync(string.Join($"{Environment.NewLine}", templates));
+        }
+
+        [Command("templates")]
+        [Summary("Posts the list of templates of a previous timeslot.")]
+        public async Task Templates(int i)
+        {
+            int timeslot  = _utility.GetLastTimeslotNumber() - Math.Abs(i);
+            var templates = await _timeslots.GetTimeslotTemplates(timeslot);
+
+            await ReplyAsync(string.Join($"{Environment.NewLine}", templates));
         }
     }
 }
