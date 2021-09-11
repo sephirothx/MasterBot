@@ -80,8 +80,9 @@ namespace MasterBot.Service.Services
 
                 chan.SendMessageAsync($"<@&{role}>").Wait();
                 chan.SendMessageAsync(_utility.GetTimeslotLink()).Wait();
-                chan.SendMessageAsync(string.Join($"{Environment.NewLine}",
-                                                  _timeslots.GetTimeslotTemplates(_utility.GetLastTimeslotNumber()).Result));
+
+                var templates = _timeslots.GetTimeslotTemplates(_utility.GetLastTimeslotNumber()).Result;
+                chan.SendMessageAsync(string.Join($"{Environment.NewLine}", templates)).Wait();
             }
             catch (Exception e)
             {
