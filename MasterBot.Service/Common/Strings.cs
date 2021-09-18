@@ -18,7 +18,7 @@
  - Our discord has a custom bot that will send a ping on every timeslot
 
 **Clan Requirements**
- - We require a minimum participation of 80% for the season, but it is ok to skip one day or two when you're busy or to take a short break with notice";
+ - We require a minimum participation of 80% for the season, it is ok to skip one day or two when you're busy or to take a short break with notice";
 
         public const string FREE_WIN = @"Wait Private you don't know what a free win is and how to get it?
 Then give me your ATTENTION and listen up while i explain.
