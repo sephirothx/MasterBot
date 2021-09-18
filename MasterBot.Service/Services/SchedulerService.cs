@@ -78,7 +78,12 @@ namespace MasterBot.Service.Services
                 var chan = _utility.GetChannelFromConfig();
                 var role = _utility.GetRoleIdFromConfig();
 
-                chan.SendMessageAsync($"<@&{role}>").Wait();
+                string msg = _utility.IsLastTimeslotOfTheDay()
+                                 ? ":warning: **Last slot of the day!** :warning: " +
+                                   "Make sure to play if you haven't yet"
+                                 : "";
+
+                chan.SendMessageAsync($"<@&{role}> {msg}").Wait();
                 chan.SendMessageAsync(_utility.GetTimeslotLink()).Wait();
 
                 var templates = _timeslots.GetTimeslotTemplates(_utility.GetLastTimeslotNumber()).Result;
