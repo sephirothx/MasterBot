@@ -32,5 +32,8 @@ It has several benefits:
     1. It ensures that, if some M'Hunters are queued, we're not just filtering the hardest opponents from them
     2. It makes us get direct matchups against M'Hunters
     3. It gives us a chance of getting 'easier' opponents on average";
+
+        public const string LAST_SLOT = @":warning: **Last slot of the day!** :warning:
+Make sure to play if you haven't yet";
     }
 }
