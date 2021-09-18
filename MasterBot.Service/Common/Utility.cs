@@ -62,9 +62,14 @@ namespace MasterBot.Service.Common
             int timeslot = GetLastTimeslotNumber() - Math.Abs(n);
             if (timeslot < 0) throw new ArgumentException("Timeslot not found");
 
-            return "https://www.warzone.com/Clans/War"  +
-                   $"?ID={GetCurrentSeason()}" +
+            return "https://www.warzone.com/Clans/War" +
+                   $"?ID={GetCurrentSeason()}"         +
                    $"&Timeslot={timeslot}";
+        }
+
+        public bool IsLastTimeslotOfTheDay()
+        {
+            return GetNextTimeslotTime().Day != DateTime.UtcNow.Day;
         }
 
         public SocketTextChannel GetChannelFromConfig()
