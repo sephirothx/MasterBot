@@ -34,7 +34,7 @@ namespace MasterBot.Service.Modules
         }
 
         [Command("clanwars"), Alias("clanwar", "cw")]
-        [Summary("")]
+        [Summary("Posts useful information about Clan Wars")]
         public async Task ClanWarsInfo()
         {
             await ReplyAsync(Strings.CLAN_WAR);
