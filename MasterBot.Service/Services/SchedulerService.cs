@@ -79,11 +79,10 @@ namespace MasterBot.Service.Services
                 var role = _utility.GetRoleIdFromConfig();
 
                 string msg = _utility.IsLastTimeslotOfTheDay()
-                                 ? Strings.LAST_SLOT
+                                 ? Environment.NewLine + Strings.LAST_SLOT
                                  : string.Empty;
 
-                chan.SendMessageAsync($"<@&{role}> {msg}").Wait();
-                chan.SendMessageAsync(_utility.GetTimeslotLink()).Wait();
+                chan.SendMessageAsync($"<@&{role}> <{_utility.GetTimeslotLink()}> {msg}").Wait();
 
                 var templates = _timeslots.GetTimeslotTemplates(_utility.GetLastTimeslotNumber()).Result;
                 chan.SendMessageAsync(string.Join($"{Environment.NewLine}", templates)).Wait();
