@@ -80,9 +80,16 @@ namespace MasterBot.Service.Common
             return ch;
         }
 
-        public ulong GetRoleIdFromConfig()
+        public ulong GetPingRoleIdFromConfig()
         {
             var id = ulong.Parse(_config["discord:ping-role"]);
+
+            return id;
+        }
+
+        public ulong GetStartRoleIdFromConfig()
+        {
+            var id = ulong.Parse(_config["discord:start-role"]);
 
             return id;
         }
