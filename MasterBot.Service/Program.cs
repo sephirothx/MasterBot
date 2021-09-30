@@ -57,6 +57,7 @@ namespace MasterBot.Service
                     .AddSingleton<Utility>()
                     .AddSingleton<StartupService>()
                     .AddSingleton<SchedulerService>()
+                    .AddSingleton<BotActions>()
                     .AddAPI<ITimeslotsData>("http://localhost:5000/api");
         }
     }
