@@ -76,16 +76,17 @@ namespace MasterBot.Service.Services
                 _logger.LogInformation("Sending Timeslot ping");
 
                 var chan = _utility.GetChannelFromConfig();
-                var role = _utility.GetRoleIdFromConfig();
+                var role = _utility.GetPingRoleIdFromConfig();
 
                 string msg = _utility.IsLastTimeslotOfTheDay()
-                                 ? Environment.NewLine + Strings.LAST_SLOT
+                                 ? Strings.LAST_SLOT + Environment.NewLine
                                  : string.Empty;
 
-                chan.SendMessageAsync($"<@&{role}> <{_utility.GetTimeslotLink()}> {msg}").Wait();
+                chan.SendMessageAsync($"{_utility.GetTimeslotLink()}").Wait();
 
                 var templates = _timeslots.GetTimeslotTemplates(_utility.GetLastTimeslotNumber()).Result;
-                chan.SendMessageAsync(string.Join($"{Environment.NewLine}", templates)).Wait();
+                chan.SendMessageAsync($"<@&{role}> {msg}{Environment.NewLine}" +
+                                      $"{string.Join($"{Environment.NewLine}", templates)}").Wait();
             }
             catch (Exception e)
             {
@@ -100,7 +101,7 @@ namespace MasterBot.Service.Services
                 _logger.LogInformation("Sending Games Starting ping");
 
                 var chan = _utility.GetChannelFromConfig();
-                var role = _utility.GetRoleIdFromConfig();
+                var role = _utility.GetStartRoleIdFromConfig();
 
                 chan.SendMessageAsync($"<@&{role}> One minute left before games start").Wait();
             }
