@@ -3,6 +3,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Discord;
 using Discord.Commands;
+using MasterBot.Service.Common;
 using Microsoft.Extensions.Configuration;
 
 namespace MasterBot.Service.Modules
@@ -12,12 +13,16 @@ namespace MasterBot.Service.Modules
     public class GeneralModule : ModuleBase<SocketCommandContext>
     {
         private readonly CommandService _commands;
+        private readonly BotActions     _actions;
         private readonly IConfiguration _config;
 
-        public GeneralModule(CommandService commands, IConfiguration config)
+        public GeneralModule(CommandService commands,
+                             BotActions actions,
+                             IConfiguration config)
         {
             _commands = commands;
             _config   = config;
+            _actions  = actions;
         }
 
         [Command("help"), Alias("h")]
@@ -94,6 +99,32 @@ namespace MasterBot.Service.Modules
             }
 
             await user.SendMessageAsync("", false, builder.Build());
+        }
+
+        [Command("noping")]
+        [Summary("Removes the ping role for Games Starting")]
+        public async Task NoPing()
+        {
+            if (Context.User is IGuildUser user)
+            {
+                var role = Context.Guild.Roles
+                                  .FirstOrDefault(r => r.Id == ulong.Parse(_config["discord:start-role"]));
+                await user.RemoveRoleAsync(role);
+                await _actions.SendDirectMessageAsync(user, "Role removed");
+            }
+        }
+
+        [Command("addping")]
+        [Summary("Adds the ping role for Games Starting")]
+        public async Task AddPing()
+        {
+            if (Context.User is IGuildUser user)
+            {
+                var role = Context.Guild.Roles
+                                  .FirstOrDefault(r => r.Id == ulong.Parse(_config["discord:start-role"]));
+                await user.AddRoleAsync(role);
+                await _actions.SendDirectMessageAsync(user, "Role granted");
+            }
         }
     }
 }
