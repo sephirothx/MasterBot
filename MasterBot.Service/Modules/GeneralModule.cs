@@ -103,6 +103,7 @@ namespace MasterBot.Service.Modules
 
         [Command("noping")]
         [Summary("Removes the ping role for Games Starting")]
+        [RequireRole("Masters")]
         public async Task NoPing()
         {
             if (Context.User is IGuildUser user)
@@ -123,6 +124,7 @@ namespace MasterBot.Service.Modules
 
         [Command("addping")]
         [Summary("Adds the ping role for Games Starting")]
+        [RequireRole("Masters")]
         public async Task AddPing()
         {
             if (Context.User is IGuildUser user)
