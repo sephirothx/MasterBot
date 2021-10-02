@@ -107,8 +107,15 @@ namespace MasterBot.Service.Modules
         {
             if (Context.User is IGuildUser user)
             {
-                var role = Context.Guild.Roles
-                                  .FirstOrDefault(r => r.Id == ulong.Parse(_config["discord:start-role"]));
+                ulong roleId = ulong.Parse(_config["discord:start-role"]);
+                var   role   = Context.Guild.Roles.FirstOrDefault(r => r.Id == roleId);
+
+                if (user.RoleIds.Contains(roleId) == false)
+                {
+                    await _actions.SendDirectMessageAsync(user, "You already have that role removed");
+                    return;
+                }
+
                 await user.RemoveRoleAsync(role);
                 await _actions.SendDirectMessageAsync(user, "Role removed");
             }
@@ -120,8 +127,15 @@ namespace MasterBot.Service.Modules
         {
             if (Context.User is IGuildUser user)
             {
-                var role = Context.Guild.Roles
-                                  .FirstOrDefault(r => r.Id == ulong.Parse(_config["discord:start-role"]));
+                ulong roleId = ulong.Parse(_config["discord:start-role"]);
+                var   role   = Context.Guild.Roles.FirstOrDefault(r => r.Id == roleId);
+
+                if (user.RoleIds.Contains(roleId))
+                {
+                    await _actions.SendDirectMessageAsync(user, "You already have that role");
+                    return;
+                }
+
                 await user.AddRoleAsync(role);
                 await _actions.SendDirectMessageAsync(user, "Role granted");
             }
