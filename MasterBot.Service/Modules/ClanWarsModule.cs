@@ -41,6 +41,13 @@ namespace MasterBot.Service.Modules
             await ReplyAsync(Strings.CLAN_WAR);
         }
 
+        [Command("jebait", true), Alias("bait", "jb")]
+        [Summary("Posts an explanation about jebaiting in Clan War.")]
+        public async Task Jebait()
+        {
+            await ReplyAsync(Strings.JEBAIT);
+        }
+
         [Command("timeslot"), Alias("lastslot", "ts", "ls")]
         [Summary("Posts a link to the latest timeslot.")]
         public async Task Timeslot()
