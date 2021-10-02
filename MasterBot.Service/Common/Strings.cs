@@ -35,5 +35,11 @@ It has several benefits:
 
         public const string LAST_SLOT = @":warning: **Last slot of the day!** :warning:
 Make sure to play if you haven't yet";
+
+        public const string JEBAIT = @"On the last timeslot, if there are many MASTERS playing we can bait MH into stacking on a single template and hopefully leave some of them without a game.
+
+In order to achieve that:
+    - Stack heavily on MH favourite template: combomb > SE1W > SEAD
+    - In the last few seconds, swap back to your intended template";
     }
 }
