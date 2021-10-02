@@ -8,6 +8,7 @@ namespace MasterBot.Service.Modules
 {
     [Name("Clan Wars")]
     [Summary("Clan Wars specific commands")]
+    [RequireRole("Masters")]
     public class ClanWarsModule : ModuleBase<SocketCommandContext>
     {
         private readonly ITimeslotsData _timeslots;
