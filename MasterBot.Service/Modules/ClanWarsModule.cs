@@ -20,21 +20,21 @@ namespace MasterBot.Service.Modules
             _utility   = utility;
         }
 
-        [Command("freewin"), Alias("fw")]
+        [Command("freewin", true), Alias("fw")]
         [Summary("Posts an explanation about free wins in Clan War.")]
         public async Task FreeWin()
         {
             await ReplyAsync(Strings.FREE_WIN);
         }
 
-        [Command("swarm")]
+        [Command("swarm", true)]
         [Summary("Posts an explanation about swarming templates in Clan War.")]
         public async Task Swarm()
         {
             await ReplyAsync(Strings.SWARM);
         }
 
-        [Command("clanwars"), Alias("clanwar", "cw")]
+        [Command("clanwars", true), Alias("clanwar", "cw")]
         [Summary("Posts useful information about Clan Wars")]
         public async Task ClanWarsInfo()
         {
