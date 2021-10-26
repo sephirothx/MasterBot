@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using Discord.Commands;
 using MasterBot.Service.Common;
-using WarZone.Web;
+using WarZone.WebClient;
 
 namespace MasterBot.Service.Modules
 {
@@ -74,7 +74,7 @@ namespace MasterBot.Service.Modules
         public async Task Templates()
         {
             int timeslot  = _utility.GetLastTimeslotNumber();
-            var templates = await _timeslots.GetTimeslotTemplates(timeslot);
+            var templates = _timeslots.GetTimeslotTemplates(timeslot);
 
             await ReplyAsync(string.Join($"{Environment.NewLine}", templates));
         }
@@ -84,7 +84,7 @@ namespace MasterBot.Service.Modules
         public async Task Templates(int n)
         {
             int timeslot  = _utility.GetLastTimeslotNumber() - Math.Abs(n);
-            var templates = await _timeslots.GetTimeslotTemplates(timeslot);
+            var templates = _timeslots.GetTimeslotTemplates(timeslot);
 
             await ReplyAsync(string.Join($"{Environment.NewLine}", templates));
         }

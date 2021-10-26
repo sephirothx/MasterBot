@@ -5,7 +5,7 @@ using MasterBot.Service.Jobs;
 using Microsoft.Extensions.Logging;
 using Quartz;
 using Quartz.Impl;
-using WarZone.Web;
+using WarZone.WebClient;
 
 namespace MasterBot.Service.Services
 {
@@ -84,7 +84,7 @@ namespace MasterBot.Service.Services
 
                 chan.SendMessageAsync($"{_utility.GetTimeslotLink()}").Wait();
 
-                var templates = _timeslots.GetTimeslotTemplates(_utility.GetLastTimeslotNumber()).Result;
+                var templates = _timeslots.GetTimeslotTemplates(_utility.GetLastTimeslotNumber());
                 chan.SendMessageAsync($"<@&{role}> {msg}{Environment.NewLine}" +
                                       $"{string.Join($"{Environment.NewLine}", templates)}").Wait();
             }
