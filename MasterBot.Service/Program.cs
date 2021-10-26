@@ -7,7 +7,7 @@ using MasterBot.Service.Services;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Serilog;
-using WarZone.Web;
+using WarZone.WebClient;
 
 namespace MasterBot.Service
 {
@@ -58,7 +58,7 @@ namespace MasterBot.Service
                     .AddSingleton<StartupService>()
                     .AddSingleton<SchedulerService>()
                     .AddSingleton<BotActions>()
-                    .AddAPI<ITimeslotsData>("http://localhost:5000/api");
+                    .AddSingleton<ITimeslotsData, TimeslotsData>();
         }
     }
 }
