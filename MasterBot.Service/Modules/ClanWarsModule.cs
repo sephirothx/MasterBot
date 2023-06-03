@@ -88,5 +88,33 @@ namespace MasterBot.Service.Modules
 
             await ReplyAsync(string.Join($"{Environment.NewLine}", templates));
         }
+
+        [Command("incrementtimeslot"), Alias("inc")]
+        [Summary("Increases the timeslot number by 1")]
+        public async Task IncrementTimeslot()
+        {
+            await _utility.IncrementTimeslotNumber();
+        }
+
+        [Command("decrementtimeslot"), Alias("dec")]
+        [Summary("Decreases the timeslot number by 1")]
+        public async Task DecrementTimeslot()
+        {
+            await _utility.IncrementTimeslotNumber(-1);
+        }
+
+        [Command("incrementseason"), Alias("incs")]
+        [Summary("Increases the season number by 1")]
+        public async Task IncrementSeason()
+        {
+            await _utility.IncrementSeasonNumber();
+        }
+
+        [Command("decrementseason"), Alias("decs")]
+        [Summary("Decreases the season number by 1")]
+        public async Task DecrementSeason()
+        {
+            await _utility.IncrementSeasonNumber(-1);
+        }
     }
 }
