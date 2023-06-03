@@ -68,7 +68,7 @@ namespace MasterBot.Service.Common
             if (timeslot < 0) throw new ArgumentException("Timeslot not found");
 
             return "https://www.warzone.com/Clans/War" +
-                   $"?ID={Getseason()}"         +
+                   $"?ID={GetCurrentSeason()}"         +
                    $"&Timeslot={timeslot}";
         }
 
@@ -99,7 +99,7 @@ namespace MasterBot.Service.Common
             return id;
         }
 
-        public int Getseason()
+        public int GetCurrentSeason()
         {
             int id = int.Parse(_config["warzone:season"]);
 
