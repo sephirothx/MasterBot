@@ -1,8 +1,13 @@
 ﻿using System;
+using System.Dynamic;
+using System.IO;
+using System.Threading.Tasks;
 using Discord;
 using Discord.WebSocket;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 
 namespace MasterBot.Service.Common
 {
@@ -47,7 +52,7 @@ namespace MasterBot.Service.Common
 
         public int GetLastTimeslotNumber()
         {
-            int key_number = int.Parse(_config["warzone:timeslot:key-number"]);
+            int key_number = int.Parse(_config["warzone:timeslot:keynumber"]);
 
             var last_time = GetLastTimeslotTime();
             var key_time  = DateTimeOffset.Parse(_config["warzone:timeslot:key-datetime"]).UtcDateTime;
@@ -63,7 +68,7 @@ namespace MasterBot.Service.Common
             if (timeslot < 0) throw new ArgumentException("Timeslot not found");
 
             return "https://www.warzone.com/Clans/War" +
-                   $"?ID={GetCurrentSeason()}"         +
+                   $"?ID={Getseason()}"         +
                    $"&Timeslot={timeslot}";
         }
 
@@ -94,9 +99,9 @@ namespace MasterBot.Service.Common
             return id;
         }
 
-        public int GetCurrentSeason()
+        public int Getseason()
         {
-            int id = int.Parse(_config["warzone:current-season"]);
+            int id = int.Parse(_config["warzone:season"]);
 
             return id;
         }
@@ -106,6 +111,42 @@ namespace MasterBot.Service.Common
             int h = int.Parse(_config["warzone:timeslot:interval-h"]);
 
             return h;
+        }
+
+        public async Task IncrementTimeslotNumber(int increment = 1)
+        {
+            await UpdateAppsettings(o =>
+                {
+                    int key = int.Parse(o.warzone.timeslot.keynumber);
+                    key += increment;
+                    o.warzone.timeslot.keynumber = key.ToString();
+                });
+        }
+
+        public async Task IncrementSeasonNumber(int increment = 1)
+        {
+            await UpdateAppsettings(o =>
+            {
+                int season = int.Parse(o.warzone.season);
+                season += increment;
+                o.warzone.season = season.ToString();
+            });
+        }
+
+        public static async Task UpdateAppsettings(Action<dynamic> action)
+        {
+            var appSettingsPath = Path.Combine(Directory.GetCurrentDirectory(), "appsettings.json");
+            var json = await File.ReadAllTextAsync(appSettingsPath);
+
+            var jsonSettings = new JsonSerializerSettings();
+            jsonSettings.Converters.Add(new ExpandoObjectConverter());
+
+            dynamic config = JsonConvert.DeserializeObject<ExpandoObject>(json, jsonSettings);
+
+            action(config);
+
+            var newJson = JsonConvert.SerializeObject(config, Formatting.Indented, jsonSettings);
+            await File.WriteAllTextAsync(appSettingsPath, newJson);
         }
     }
 }
